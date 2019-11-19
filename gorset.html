@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    function Metrics() {
+    var currentMetric = 0,
+        tarrif = 0.22,
+        date = "",
+        isPayed = false,
+        oplacheno=0,
+        dolg_clienta=0,
+        dolg_company=0;
+        metrics = [], 
+        currentSum = 0,
+        conductor = "",
+        paymentDate = "";
+    
+    function setMetric(metric, metricDate, payedBill) {
+        currentMetric = metric;
+        date = metricDate;
+        currentSum = tarrif * metric;
+        isPayed = payedBill;
+    }
+    
+    function Pay(sum, conductorPay) {
+        var delta = sum - currentMetric * tarrif;
+        conductor = conductorPay;
+        paymentDate = new Date();
+        currentSum = currentSum -  sum;
+        oplacheno=sum;
+
+        if(delta == 0 || delta>0 ) {
+            isPayed = true; 
+            dolg_clienta=false; 
+            dolg_company=currentSum; 
+            currentSum=0;
+            } 
+            else {
+                isPayed=false; 
+                dolg_clienta=delta;
+                dolg_company=0;
+                }
+
+        metrics.push({
+            currentMetric, 
+            isPayed,
+            oplacheno,
+            dolg_clienta, 
+            date, 
+            currentSum, 
+            conductor,
+            paymentDate,
+            dolg_company
+        });
+
+    }
+
+    function getMetric() {
+        var innerMetrics = {
+            currentMetric, currentSum, date,  oplacheno, isPayed,  dolg_clienta, dolg_company
+        };
+
+        if (isPayed) {
+            innerMetrics.conductor = conductor;
+            innerMetrics.paymentDate = paymentDate;
+        }
+
+        return innerMetrics;
+    }
+
+    return {
+        setMetric, getMetric, Pay
+    }
+}
+
+var m1 = new Metrics();
+var m2=new Metrics();
+m1.setMetric(450, "18.11.2019", false);
+console.log(m1.getMetric());
+m1.Pay(50, "Savzali");
+console.log(m1.getMetric());
+m2.setMetric(8450,"18.12.2019",false);
+m2.Pay(1860, "Firdavs");
+console.log(m2.getMetric());
+    </script>
+</body>
+</html>
